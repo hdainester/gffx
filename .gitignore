@@ -1,0 +1,8 @@
+## java class files
+*.class
+
+## log files
+.log
+
+## test
+.java
