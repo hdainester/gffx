@@ -1,5 +1,9 @@
-## java class files
-*.class
+## build directory
+build
 
 ## log files
 .log
+
+## makefile
+makefile
+Makefile
