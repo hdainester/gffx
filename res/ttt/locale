@@ -1,0 +1,19 @@
+## Locale ##
+##
+## Syntax:
+## <id>: {<lang specifier>, <phrase>;}
+##
+## no special charachters allowd
+## leading and following whitespaces are ignored
+##
+## e.g. langMap.get("new_game", "de");
+
+new_game:   en, New Game;       de, Neues Spiel;
+quit:       en, Quit;           de, Beenden;
+pva:        en, Player vs AI;   de, Spieler vs KI;
+wins:       en, wins;           de, gewinnt;
+player:     en, player;         de, Spieler;
+game_over:  en, Game Over;      de, Spiel beendet;
+hide:       en, Hide;           de, Verstecken;
+show:       en, Show;           de, Anzeigen;
+no_winner:  en, No Winner;      de, Kein Sieger;
