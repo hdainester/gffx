@@ -79,7 +79,7 @@ public class TicTacToe extends Game2D {
                 throw new Exception("player symbol must not be null");
 
             for(j = i+1; j < getPlayers().length; ++j)
-                if(getPlayers()[i].getSymbol() == getPlayers()[j].getSymbol())
+                if(getPlayers()[i].getSprite() == getPlayers()[j].getSprite())
                     throw new Exception("only one player per symbol allowed");
         }
     }

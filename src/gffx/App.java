@@ -2,8 +2,8 @@ package gffx;
 
 import gffx.game.Game2D;
 import gffx.game.entity.Player;
+import gffx.game.ressource.Sprite;
 import gffx.game.world.Field2D;
-import gffx.game.world.Symbol;
 import gffx.gui.view.Game2DView;
 import gffx.gui.view.OptionsDialog;
 import gffx.util.Locale;
@@ -47,10 +47,10 @@ public class App extends Application {
     private void initTicTacToe() {
         Field2D field = new Field2D(FIELD_WDT, FIELD_HGT);
         Player[] players = new Player[] {
-            new Player(Symbol.CROSS),
-            new TicTacToeAI(Symbol.CIRCLE, 2)
+            new Player(new Sprite("res/ttt/image/sprite/cross.png")),
+            new TicTacToeAI(new Sprite("res/ttt/image/sprite/circle.png"), 2)
         };
-
+        
         try {
             game = new TicTacToe(players, field);
         } catch(Exception e) {
@@ -83,10 +83,5 @@ public class App extends Application {
                 setOnAction(e -> mainDialog.fireEvent(new WindowEvent(mainDialog, WindowEvent.WINDOW_CLOSE_REQUEST)));
             }}
         );
-
-        /*
-        for(Button option : options)
-            mainDialog.addOption(option);
-        */
     }
 }

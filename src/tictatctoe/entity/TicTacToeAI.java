@@ -3,15 +3,15 @@ package tictactoe.entity;
 import gffx.game.Game;
 import gffx.game.entity.AI;
 import gffx.game.entity.Player;
+import gffx.game.ressource.Sprite;
 import gffx.game.rule.AIOperation;
-import gffx.game.world.Symbol;
 import tictactoe.TicTacToe;
 
 public class TicTacToeAI extends AI {
     private int level;
 
-    public TicTacToeAI(Symbol symbol, int level) {
-        super(symbol);
+    public TicTacToeAI(Sprite sprite, int level) {
+        super(sprite);
         this.level = level;
     }
 
@@ -55,8 +55,6 @@ public class TicTacToeAI extends AI {
                     rating = rate(minimax(gamecopy, depth-1, !ismax));
                     if(depth == 1)
                         System.out.println(" rating: " + rating + "/" + bestrating);
-
-                    //System.out.println((this == curplayer) + ", " + (rating > bestrating) + ", " + (rating < bestrating) + ", " + (this == curplayer ? (rating > bestrating) : (rating < bestrating)));
 
                     if(this == curplayer ? (rating > bestrating) : (rating < bestrating)) { // 'bestrating' relative to minimax algorithm
                         System.out.println(depth + ": best turn at " + x + ", " + y + " rating: " + rating);

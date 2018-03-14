@@ -43,32 +43,12 @@ public class Field2DPane extends GridPane {
                 getRowConstraints().add(rconts);
         }
 
-        //field.deleteObservers(); // bad move // TODO delete observers on close request of parent window
         field.addObserver((obs, arg) -> {
-            int j = ((Integer)arg).intValue();
-            Player p = field.get(j); //grid.get(j);
-            FieldCell cell = cells.get(j);
+            int index = ((Integer)arg).intValue();
+            Player player = field.get(index);
+            cells.get(index).set(0, player != null ? player.getSprite() : null);
 
-            cell.pop();
-            if(p != null)
-                cell.put(p.getSymbol());
-
-            // delete observer when parent stage closes
-            /* auch schlecht -> überschreibt ggf. parent close request
-            Parent pa = getParent();
-            while(pa != null) {
-                try {
-                    ((Stage)pa).setOnCloseRequest(e -> field.deleteObserver(Observable.this));
-                    break;
-                } catch(ClassCastException e) {
-                    e.printStackTrace();
-                }
-
-                pa = pa.getParent();
-            }
-            */
-            
-            System.out.println("cell " + j + " changed to " + p);
+            System.out.println("cell " + index + " changed to " + player);
         });
     }
 
@@ -80,17 +60,14 @@ public class Field2DPane extends GridPane {
         try {
             return cells.get(y*gridwidth + x);
         } catch(IndexOutOfBoundsException e) {
-            // e.printStacktrace();
+            e.printStackTrace();
         }
 
         return null;
     }
 
     public int indexOf(FieldCell cell) {
-        for(int i = 0; i < cells.size(); ++i)
-            if(cell == cells.get(i)) return i;
-
-        return -1;
+        return cells.indexOf(cell);
     }
 
     public int xPosOf(FieldCell cell) {

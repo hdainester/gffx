@@ -63,6 +63,10 @@ public class Field2D extends Observable {
         return null;
     }
 
+    public int indexOf(Player p) {
+        return grid.indexOf(p);
+    }
+
     public Collection<Player> grid() {
         return grid;
     }

@@ -2,6 +2,7 @@ package gffx.gui.view;
 
 import gffx.game.Game2D;
 import gffx.game.entity.Player;
+import gffx.game.ressource.Texture;
 import gffx.gui.comp.Field2DPane;
 import gffx.gui.view.OptionsDialog;
 import gffx.util.Locale;
@@ -81,7 +82,7 @@ public class Game2DView extends Stage {
         gamePane.getHConstraints().setPercentWidth(100);
         gamePane.getVConstraints().setPercentHeight(100);
         gamePane.getCells().forEach(cell -> {
-            cell.setBackground("res/ttt/image/texture.png"); // TODO game.getRessourcePath or something like that
+            cell.setTexture(new Texture("res/ttt/image/texture/texture.png")); // TODO game.getRessourcePath or something like that
             cell.setOnMouseClicked(e -> {
                 System.out.println("cell " + gamePane.xPosOf(cell) + ", " + gamePane.yPosOf(cell) + " clicked");
 
