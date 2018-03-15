@@ -37,18 +37,19 @@ public class Field2DPane extends GridPane {
             cells.add(newcell);
 
             if(i < field.width())
-                getColumnConstraints().add(cconts);
-
+               getColumnConstraints().add(cconts);
+               
             if(i < field.height())
                 getRowConstraints().add(rconts);
         }
 
         field.addObserver((obs, arg) -> {
+            // System.out.println("Field2DPane::Observer: notification received");
             int index = ((Integer)arg).intValue();
-            Player player = field.get(index);
-            cells.get(index).set(0, player != null ? player.getSprite() : null);
+            Player player = field.get(index); // bad -> waits for field to finish operations
 
-            System.out.println("cell " + index + " changed to " + player);
+            cells.get(index).set(0, player != null ? player.getSprite() : null);
+            // System.out.println("Field2dPane::Observer: cell " + index + " changed to " + player);
         });
     }
 

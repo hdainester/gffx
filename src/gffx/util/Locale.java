@@ -82,7 +82,7 @@ public class Locale {
                 // first specified language in locale is default language
                 return langMap.get(id).values().toArray(new String[]{})[0];
 
-        return "";
+        return "%?!$%#";
     }
 
     public static String getLang() {

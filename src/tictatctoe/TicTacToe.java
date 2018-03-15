@@ -1,8 +1,9 @@
 package tictactoe;
 
+import gffx.game.Game;
 import gffx.game.Game2D;
-import gffx.game.entity.AI;
 import gffx.game.entity.Player;
+import gffx.game.entity.PlayerAI;
 import gffx.game.rule.AIOperation;
 import gffx.game.world.Field2D;
 
@@ -15,12 +16,12 @@ public class TicTacToe extends Game2D {
     }
 
     public TicTacToe(TicTacToe other) {
-        super(other.getPlayers(), new Field2D(other.getField()));
+        super(other.getPlayers().toArray(new Player[0]), new Field2D(other.getField()));
 
         try {
             init();
             next = other.next;
-        } catch(Exception e) { // this should'nt happen
+        } catch(Exception e) { // this shouldn't happen
             e.printStackTrace();
         }
     }
@@ -29,9 +30,9 @@ public class TicTacToe extends Game2D {
         setTurnCondition(() -> {
             if(getField().get(getCursorX(), getCursorY()) == null) {
                 int last = next;
-                getField().set(getCursorX(), getCursorY(), getPlayers()[next]);
-                next = (next+1)%getPlayers().length;
-                return getPlayers()[last];
+                getField().set(getCursorX(), getCursorY(), getPlayers().get(next));
+                next = (next+1)%getPlayers().size();
+                return getPlayers().get(last);
             }
 
             return null;
@@ -74,21 +75,20 @@ public class TicTacToe extends Game2D {
             return false;
         });
 
-        for(int j, i = 0; i < getPlayers().length-1; ++i) {
-            if(getPlayers()[i] == null)
+        for(int j, i = 0; i < getPlayers().size()-1; ++i) {
+            if(getPlayers().get(i) == null)
                 throw new Exception("player symbol must not be null");
 
-            for(j = i+1; j < getPlayers().length; ++j)
-                if(getPlayers()[i].getSprite() == getPlayers()[j].getSprite())
+            for(j = i+1; j < getPlayers().size(); ++j)
+                if(getPlayers().get(i).getSprite() == getPlayers().get(j).getSprite())
                     throw new Exception("only one player per symbol allowed");
         }
     }
 
     public Player getNextPlayer() {
-        return getPlayers()[next];
+        return getPlayers().get(next);
     }
-
-
+    
     @Override
     public void reset() {
         next = 0;
@@ -98,8 +98,8 @@ public class TicTacToe extends Game2D {
     @Override
     public void aiMove(AIOperation op) {
         try {
-            ((AI)getPlayers()[next]).move(this, op);
-        } catch(ClassCastException e) { /* no AI */ }
+            ((PlayerAI)getPlayers().get(next)).move(this, op);
+        } catch(ClassCastException e) { /* not a PlayerAI */ }
     }
 
     @Override
@@ -116,6 +116,11 @@ public class TicTacToe extends Game2D {
         return false;
     }
     
+    @Override
+    public Game copy() {
+        return new TicTacToe(this);
+    }
+
     @Override
     public String getTitle() {
         return "TicTacToe";

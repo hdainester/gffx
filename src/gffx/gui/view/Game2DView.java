@@ -6,11 +6,17 @@ import gffx.game.ressource.Texture;
 import gffx.gui.comp.Field2DPane;
 import gffx.gui.view.OptionsDialog;
 import gffx.util.Locale;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
+import javafx.event.Event;
 import javafx.event.EventTarget;
+import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -26,9 +32,11 @@ public class Game2DView extends Stage {
     private BorderPane mainPane;
     private Field2DPane gamePane;
     private OptionsDialog gameOverDialog;
+    private Thread aiThread;
 
     public Game2DView(Stage parent, Game2D game) {
         this.game = game;
+        aiThread = new Thread();
 
         if(parent != null) {
             initOwner(parent);
@@ -44,9 +52,9 @@ public class Game2DView extends Stage {
             if(parent != null && !parent.isShowing())
                 parent.show();
         });
-
-        setMinWidth(Screen.getPrimary().getVisualBounds().getWidth()/4);
-        setMinHeight(Screen.getPrimary().getVisualBounds().getHeight()/4);
+        
+        setMinWidth(Screen.getPrimary().getVisualBounds().getWidth()/2);
+        setMinHeight(Screen.getPrimary().getVisualBounds().getHeight()/2);
         centerOnScreen();
         initScene();
     }
@@ -82,25 +90,26 @@ public class Game2DView extends Stage {
         gamePane.getHConstraints().setPercentWidth(100);
         gamePane.getVConstraints().setPercentHeight(100);
         gamePane.getCells().forEach(cell -> {
-            cell.setTexture(new Texture("res/ttt/image/texture/texture.png")); // TODO game.getRessourcePath or something like that
+            cell.setTexture(new Texture("res/ttt/image/texture/stone_bricks.png")); // TODO game.getRessourcePath or something like that
             cell.setOnMouseClicked(e -> {
                 System.out.println("cell " + gamePane.xPosOf(cell) + ", " + gamePane.yPosOf(cell) + " clicked");
-
-                if(game.isRunning()) {
-                    game.setCursor(gamePane.xPosOf(cell), gamePane.yPosOf(cell));
+                
+                if(game.isRunning() && !aiThread.isAlive()) {
+                    game.setCursor(gamePane.xPosOf(cell), gamePane.yPosOf(cell));                        
                     playTurn();
+                }
 
-                    if(game.isRunning()) {
-                        game.aiMove(() -> {
-                            System.out.println("AI move");
-                            playTurn();
-                        });
-                    }
+                if(game.isRunning() && !aiThread.isAlive()) {
+                    (aiThread = new Thread(() ->
+                        game.aiMove(() ->
+                            Platform.runLater(() ->
+                                playTurn()
+                    ))) {{ setDaemon(true); }}).start();
                 }
             });
         });
 
-        game.aiMove(() -> playTurn()); // in case AI goes first
+        game.aiMove(() -> playTurn()); // in case AI goes first (caution: this is not on its own thread so it will block JavaFX Thread until done!)
         setScene(new Scene(mainPane));
     }
 
@@ -150,7 +159,7 @@ public class Game2DView extends Stage {
 
         if(!game.isRunning()) {
             if(game.winCondition().check(p))
-                gameOverDialog.setContent(Locale.get("player") + " " + p.getID() + " " + Locale.get("wins"));
+                gameOverDialog.setContent(Locale.get("player") + " " + (game.getPlayers().indexOf(p)+1) + " " + Locale.get("wins"));
             else
                 gameOverDialog.setContent(Locale.get("no_winner"));
 

@@ -15,7 +15,7 @@ public abstract class Game2D extends Game {
 
     // TODO copy ctor for Player, Turn- and WinCondition
     public Game2D(Game2D other) {
-        this(other.getPlayers(), new Field2D(other.getField()));
+        this(other.getPlayers().toArray(new Player[0]), new Field2D(other.getField()));
         setTurnCondition(other.turnCondition()); // TODO : problem here -> the methods of the Conditions may
         setWinCondition(other.winCondition());   // still refer to the instances they were initialized in
         setCursor(other.cursorX, other.cursorY);

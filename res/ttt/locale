@@ -17,3 +17,11 @@ game_over:  en, Game Over;      de, Spiel beendet;
 hide:       en, Hide;           de, Verstecken;
 show:       en, Show;           de, Anzeigen;
 no_winner:  en, No Winner;      de, Kein Sieger;
+lang:       en, Language;       de, Sprache;
+game:       en, Game;           de, Spiel;
+level:      en, Level;          # kleiner test
+field:      en, Gamefield;      de, Spielfeld;
+width:      en, Width;          de, Breite;
+height:     en, Height;         de, Hoehe;
+maincfg:    en, Main Configuration;      de, Haptkonfiguration;
+gamecfg:    en, Game Configuration;     de, Spielkonfiguration;

@@ -1,7 +1,6 @@
 package gffx.game.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Observable;
 
@@ -45,7 +44,7 @@ public class Field2D extends Observable {
                 notifyObservers(new Integer(i));
             }
         } catch(IndexOutOfBoundsException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -57,7 +56,7 @@ public class Field2D extends Observable {
         try {
             return grid.get(i);
         } catch(IndexOutOfBoundsException e) {
-            // e.printStacktrac();
+            e.printStackTrace();
         }
 
         return null;

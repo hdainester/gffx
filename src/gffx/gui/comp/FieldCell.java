@@ -1,7 +1,5 @@
 package gffx.gui.comp;
 
-import java.util.Stack;
-
 import gffx.game.ressource.Sprite;
 import gffx.game.ressource.Texture;
 import gffx.game.world.Field2D;
@@ -28,6 +26,7 @@ public class FieldCell extends StackPane {
         init();
     }
 
+    // TODO move this method to Field2D and have Sprites act as Textures in this class
     public void setTexture(Texture background) {
         if(background != null) {
             if(hasTexture) {
@@ -42,13 +41,13 @@ public class FieldCell extends StackPane {
         }
     }
 
+    // TODO mark sprite as background method -> set(Sprite)
     public void set(int i, Sprite sprite) {
         if(i >= 0) {
             i += hasTexture ? 1 : 0;
-            System.out.println("set at " + i + ", " + sprite + ", " + prepareView(sprite, true));
             
             if(sprite != null) {
-                if(i < getChildren().size()) // TODO test if it works
+                if(i < getChildren().size())
                     getChildren().set(1, prepareView(sprite, true));
                 else
                     getChildren().add(prepareView(sprite, true));
