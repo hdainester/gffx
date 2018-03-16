@@ -10,7 +10,7 @@
 
 new_game:   en, New Game;       de, Neues Spiel;
 quit:       en, Quit;           de, Beenden;
-pva:        en, Player vs AI;   de, Spieler vs KI;
+pva:        en, Enable AI;      de, Aktiviere KI;
 wins:       en, wins;           de, gewinnt;
 player:     en, player;         de, Spieler;
 game_over:  en, Game Over;      de, Spiel beendet;
@@ -23,5 +23,10 @@ level:      en, Level;          # kleiner test
 field:      en, Gamefield;      de, Spielfeld;
 width:      en, Width;          de, Breite;
 height:     en, Height;         de, Hoehe;
+gravity:    en, Gravity;        de, Gravitation;
+opponent:   en, Opponent;       de, Gegner;
+points:     en, Points;         de, Punkte;
+rules:      en, Rules;          de, Regeln;
+reset:      en, Reset;          de, Zuruecksetzen;
 maincfg:    en, Main Configuration;      de, Haptkonfiguration;
-gamecfg:    en, Game Configuration;     de, Spielkonfiguration;
+gamecfg:    en, Game Configuration;      de, Spielkonfiguration;

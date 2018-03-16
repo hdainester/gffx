@@ -31,15 +31,15 @@ public class Field2DPane extends GridPane {
         gridwidth = field.width();
         gridheight = field.height();
 
-        for(int i = 0; i < gridheight*gridheight; ++i) {
+        for(int i = 0; i < gridwidth*gridheight; ++i) {
             FieldCell newcell = new FieldCell(field);
-            add(newcell, i%gridwidth, i/gridwidth); // TODO (slow)
+            add(newcell, i%gridwidth, i/gridwidth);
             cells.add(newcell);
 
-            if(i < field.width())
+            if(i < gridwidth)
                getColumnConstraints().add(cconts);
                
-            if(i < field.height())
+            if(i < gridheight)
                 getRowConstraints().add(rconts);
         }
 

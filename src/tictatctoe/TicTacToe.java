@@ -8,10 +8,15 @@ import gffx.game.rule.AIOperation;
 import gffx.game.world.Field2D;
 
 public class TicTacToe extends Game2D {
-    private int next = 0;
+    private int next = 0, winPoints;
 
     public TicTacToe(Player[] players, Field2D field) throws Exception {
+        this(players, field, field.height());
+    }
+
+    public TicTacToe(Player[] players, Field2D field, int winPoints) throws Exception {
         super(players, field);
+        this.winPoints = winPoints;
         init();
     }
 
@@ -40,13 +45,12 @@ public class TicTacToe extends Game2D {
 
         setWinCondition((p) -> {
             if(p != null) {
-                final int WIN_PTS = getField().height();
                 int wdt = getField().width(), hgt = getField().height(), dgt = wdt+hgt;
                 int[] hpoints = new int[hgt];
                 int[] vpoints = new int[wdt];
                 int[] d1points = new int[dgt];
                 int[] d2points = new int[dgt];
-
+                
                 for(int d1, d2, y = 0; y < hgt; ++y) {
                     for(int x = 0; x < wdt; ++x) {
                         d1 = (dgt/2) + (x-y);
@@ -59,8 +63,8 @@ public class TicTacToe extends Game2D {
                             d2points[d2]++;
 
 
-                            if(hpoints[y] >= WIN_PTS || vpoints[x] >= WIN_PTS
-                            || d1points[d1] >= WIN_PTS || d2points[d2] >= WIN_PTS)
+                            if(hpoints[y] >= winPoints || vpoints[x] >= winPoints
+                            || d1points[d1] >= winPoints || d2points[d2] >= winPoints)
                                 return true;
                         } else {
                             hpoints[y] = 0;

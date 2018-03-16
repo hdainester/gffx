@@ -45,13 +45,11 @@ public class SetupStage {
     private static final OptionsDialog mainDialog = new OptionsDialog(APP_TITLE);
 
     private static String gameTitle;
-    private static IntegerProperty fieldWidth = new SimpleIntegerProperty();
-    private static IntegerProperty fieldHeight = new SimpleIntegerProperty();
-    private static IntegerProperty aiLevel = new SimpleIntegerProperty();
+    private static IntegerProperty fieldWidth, fieldHeight, aiLevel, gamePoints;
 
-    private static CheckBox cbx_ai;
+    private static CheckBox cbx_ai, cbx_gravity;
     private static ChoiceBox<String> chx_lang, chx_game;
-    private static CounterPane ctp_level, ctp_width, ctp_height;
+    private static CounterPane ctp_level, ctp_width, ctp_height, ctp_points;
     private static Map<String, StringProperty> textMap;
 
     static {
@@ -62,7 +60,7 @@ public class SetupStage {
                 : new Player(new Sprite("res/ttt/image/sprite/circle_cracked_red.png"));
 
             try {
-                return new TicTacToe(players, new Field2D(fieldWidth.get(), fieldHeight.get()));
+                return new TicTacToe(players, new Field2D(fieldWidth.get(), fieldHeight.get()), gamePoints.get());
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -79,19 +77,26 @@ public class SetupStage {
     }
 
     public static void init() {
+        mainDialog.setContent((String)null);
+        mainDialog.getOptions().clear();
+
         fieldWidth = new SimpleIntegerProperty();
         fieldHeight = new SimpleIntegerProperty();
         aiLevel = new SimpleIntegerProperty();
+        gamePoints = new SimpleIntegerProperty();
 
         cbx_ai = new CheckBox();
+        cbx_gravity = new CheckBox();
         chx_lang = new ChoiceBox<>(FXCollections.observableArrayList(Locale.getLanguages()));
         chx_game = new ChoiceBox<>(FXCollections.observableArrayList(GameManager.getAllTitles()));
         ctp_level = new CounterPane(3, 1, 1, 10);
-        ctp_width = new CounterPane(3, 3, 1, 99);
-        ctp_height = new CounterPane(3, 3, 1, 99);
+        ctp_width = new CounterPane(3, 3, 1);
+        ctp_height = new CounterPane(3, 3, 1);
+        ctp_points = new CounterPane(3, 3, 1);
         textMap = new HashMap<>();
 
         textMap.put("lang", new SimpleStringProperty(Locale.get("lang")));
+        textMap.put("gravity", new SimpleStringProperty(Locale.get("gravity")));
         textMap.put("game", new SimpleStringProperty(Locale.get("game")));
         textMap.put("pva", new SimpleStringProperty(Locale.get("pva")));
         textMap.put("field", new SimpleStringProperty(Locale.get("field")));
@@ -100,38 +105,58 @@ public class SetupStage {
         textMap.put("maincfg", new SimpleStringProperty(Locale.get("maincfg")));
         textMap.put("gamecfg", new SimpleStringProperty(Locale.get("gamecfg")));
         textMap.put("new_game", new SimpleStringProperty(Locale.get("new_game")));
+        textMap.put("opponent", new SimpleStringProperty(Locale.get("opponent")));
         textMap.put("level", new SimpleStringProperty(Locale.get("level")));
+        textMap.put("points", new SimpleStringProperty(Locale.get("points")));
+        textMap.put("rules", new SimpleStringProperty(Locale.get("rules")));
+        textMap.put("reset", new SimpleStringProperty(Locale.get("reset")));
         textMap.put("quit", new SimpleStringProperty(Locale.get("quit")));
     }
 
     public static void build() {
-        VBox main_pane = new VBox(5);
-        VBox main_config = new VBox(5);
-        VBox game_config = new VBox(5);
         GridPane main_grid = new GridPane();
-
-        main_grid.addRow(0, new Text() {{ textProperty().bind(textMap.get("lang")); }}, chx_lang);
-        main_grid.addRow(1, new Text() {{ textProperty().bind(textMap.get("game")); }}, chx_game);
-        main_grid.addRow(2, cbx_ai, new Text() {{ textProperty().bind(textMap.get("level")); }},  ctp_level);
-        main_grid.addRow(3,
-            new Text() {{ textProperty().bind(textMap.get("field")); }},
-            new Text() {{ textProperty().bind(textMap.get("width")); }},
-            ctp_width,
-            new Text() {{ textProperty().bind(textMap.get("height")); }},
-            ctp_height
-        );
-
         RowConstraints rconts = new RowConstraints();
+        RowConstraints rconts2 = new RowConstraints();
         ColumnConstraints cconts = new ColumnConstraints();
+        ColumnConstraints cconts2 = new ColumnConstraints();
+
+        // Main confing
+        main_grid.addRow(0,
+            new Label() {{ textProperty().bind(textMap.get("maincfg")); }},
+            new Separator() {{ GridPane.setColumnSpan(this, GridPane.REMAINING); }}
+        );
+        main_grid.addRow(1, new Text() {{ textProperty().bind(textMap.get("lang")); }}, chx_lang);
+        main_grid.addRow(2, new Text() {{ textProperty().bind(textMap.get("game")); }}, chx_game);
+
+        // Game config
+        main_grid.addRow(3,
+            new Label() {{ textProperty().bind(textMap.get("gamecfg")); }},
+            new Separator() {{ GridPane.setColumnSpan(this, GridPane.REMAINING); }}
+        );
+        main_grid.addRow(4, new Text() {{ textProperty().bind(textMap.get("rules")); }}, ctp_points, cbx_gravity);
+        main_grid.addRow(5, new Text() {{ textProperty().bind(textMap.get("opponent")); }}, ctp_level, cbx_ai);
+        main_grid.addRow(6, new Text() {{ textProperty().bind(textMap.get("field")); }}, ctp_width, ctp_height);
 
         rconts.setPercentHeight(100);
+        rconts2.setPercentHeight(25);
         cconts.setPercentWidth(100);
+        cconts2.setPercentWidth(50);
 
-        main_grid.getRowConstraints().addAll(rconts, rconts, rconts, rconts);
-        main_grid.getColumnConstraints().addAll(cconts, cconts, cconts, cconts, cconts);
+        //main_grid.setGridLinesVisible(true); // DEBUG
+        main_grid.getRowConstraints().addAll(rconts2, rconts, rconts, rconts2, rconts, rconts, rconts);
+        main_grid.getColumnConstraints().addAll(cconts2, cconts, cconts);
         main_grid.setPadding(new Insets(10, 10, 10, 10));
-        main_grid.getChildren().forEach(c -> main_grid.setMargin(c, new Insets(0, 5, 0, 5)));
-        // main_grid.setGridLinesVisible(true);
+        main_grid.getChildren().forEach(c -> {
+            GridPane.setMargin(c, new Insets(0, 5, 0, 5));
+            GridPane.setHalignment(c, HPos.LEFT);
+        });
+
+        // TODO figure out why HBox (from CounterPane) ignores set Halignment of GridPane
+        ctp_level.setAlignment(Pos.CENTER_LEFT);
+        ctp_points.setAlignment(Pos.CENTER_LEFT);
+        ctp_width.setAlignment(Pos.CENTER_LEFT);
+        ctp_height.setAlignment(Pos.CENTER_LEFT);
+        /////// (temp solution)
 
         // events/bindings
         chx_lang.setOnAction(e -> {
@@ -141,13 +166,40 @@ public class SetupStage {
         chx_game.setOnAction(e -> gameTitle = chx_game.getSelectionModel().getSelectedItem());
 
         ctp_level.disableProperty().bind(cbx_ai.selectedProperty().not());
+
+        // not sure if I like this behaviour
+        ctp_width.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal.intValue() < fieldHeight.get()) {
+                ctp_points.maxValueProperty().set(newVal.intValue());
+                
+                if(ctp_points.valueProperty().get() > newVal.intValue())
+                    ctp_points.valueProperty().set(newVal.intValue());
+            }
+        });
+        ctp_height.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal.intValue() < fieldWidth.get()) {
+                ctp_points.maxValueProperty().set(newVal.intValue());
+                
+                if(ctp_points.valueProperty().get() > newVal.intValue())
+                    ctp_points.valueProperty().set(newVal.intValue());
+            }
+        });
+        ////
+
         aiLevel.bind(ctp_level.valueProperty());
+        gamePoints.bind(ctp_points.valueProperty());
         fieldWidth.bind(ctp_width.valueProperty());
         fieldHeight.bind(ctp_height.valueProperty());
         //////////////////
         
         // initial setup
         cbx_ai.textProperty().bind(textMap.get("pva"));
+        cbx_gravity.textProperty().bind(textMap.get("gravity"));
+        ctp_points.titleProperty().bind(textMap.get("points"));
+        ctp_level.titleProperty().bind(textMap.get("level"));
+        ctp_width.titleProperty().bind(textMap.get("width"));
+        ctp_height.titleProperty().bind(textMap.get("height"));
+
         chx_lang.getSelectionModel().selectFirst();
         chx_game.getSelectionModel().selectFirst();
         ////////////////
@@ -160,6 +212,13 @@ public class SetupStage {
                     mainDialog.hide();
                     GameManager.init(gameTitle);
                     new Game2DView(mainDialog, (Game2D)GameManager.get(gameTitle)).show();
+                });
+            }},
+            new Button() {{
+                textProperty().bind(textMap.get("reset"));
+                setOnAction(e -> {
+                    init();
+                    build();
                 });
             }},
             new Button() {{
