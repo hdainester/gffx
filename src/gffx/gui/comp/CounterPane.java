@@ -6,7 +6,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -84,10 +83,14 @@ public class CounterPane extends HBox {
             textProperty().bind(CounterPane.this.title);
         }};
 
-        value.addListener((obj) -> {
+        InvalidationListener valueListener = (obj) -> {
             btnInc.setDisable(value.get() >= maxValue.get());
             btnDec.setDisable(value.get() <= minValue.get());
-        });
+        };
+
+        minValue.addListener(valueListener);
+        maxValue.addListener(valueListener);
+        value.addListener(valueListener);
         value.set(initial);
 
         disableProperty().addListener((obj, oldVal, newVal) -> {
@@ -95,7 +98,7 @@ public class CounterPane extends HBox {
                 btnInc.setDisable(true);
                 btnDec.setDisable(true);
             } else {
-                // HACK (triggers listeners)
+                // HACK (triggers listener)
                 value.set(value.get()+1);
                 value.set(value.get()-1);
             }

@@ -89,10 +89,10 @@ public class SetupStage {
         cbx_gravity = new CheckBox();
         chx_lang = new ChoiceBox<>(FXCollections.observableArrayList(Locale.getLanguages()));
         chx_game = new ChoiceBox<>(FXCollections.observableArrayList(GameManager.getAllTitles()));
+        ctp_points = new CounterPane(3, 3, 1, 3);
         ctp_level = new CounterPane(3, 1, 1, 10);
         ctp_width = new CounterPane(3, 3, 1);
         ctp_height = new CounterPane(3, 3, 1);
-        ctp_points = new CounterPane(3, 3, 1);
         textMap = new HashMap<>();
 
         textMap.put("lang", new SimpleStringProperty(Locale.get("lang")));
@@ -167,14 +167,15 @@ public class SetupStage {
 
         ctp_level.disableProperty().bind(cbx_ai.selectedProperty().not());
 
-        // not sure if I like this behaviour
+        // not sure if I like this behaviour (apart from this beeing a mess)
         ctp_width.valueProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal.intValue() < fieldHeight.get()) {
                 ctp_points.maxValueProperty().set(newVal.intValue());
                 
                 if(ctp_points.valueProperty().get() > newVal.intValue())
                     ctp_points.valueProperty().set(newVal.intValue());
-            }
+            } else
+                ctp_points.maxValueProperty().set(fieldHeight.get());
         });
         ctp_height.valueProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal.intValue() < fieldWidth.get()) {
@@ -182,9 +183,9 @@ public class SetupStage {
                 
                 if(ctp_points.valueProperty().get() > newVal.intValue())
                     ctp_points.valueProperty().set(newVal.intValue());
-            }
+            } else
+                ctp_points.maxValueProperty().set(fieldWidth.get());
         });
-        ////
 
         aiLevel.bind(ctp_level.valueProperty());
         gamePoints.bind(ctp_points.valueProperty());
