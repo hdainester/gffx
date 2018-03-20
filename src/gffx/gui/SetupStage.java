@@ -55,12 +55,21 @@ public class SetupStage {
     static {
         GameManager.add("TicTacToe", () -> {
             Player[] players = new Player[2];
-            players[0] = new Player(new Sprite("res/ttt/image/sprite/cross_cracked_blue.png"));
+            //* player vs ai
+            players[0] = new Player(new Sprite("res/ttt/image/sprite/male_cross.png"));
+            players[1] = cbx_ai.isSelected() ? new TicTacToeAI(new Sprite("res/ttt/image/sprite/male_circle.png"), aiLevel.get())
+                : new Player(new Sprite("res/ttt/image/sprite/male_circle.png"));
+            //*/
+
+            /* ai vs ai
+            players[0] = cbx_ai.isSelected() ? new TicTacToeAI(new Sprite("res/ttt/image/sprite/cross_cracked_blue.png"), aiLevel.get())
+                : new Player(new Sprite("res/ttt/image/sprite/cross_cracked_blue.png"));
             players[1] = cbx_ai.isSelected() ? new TicTacToeAI(new Sprite("res/ttt/image/sprite/circle_cracked_red.png"), aiLevel.get())
-                : new Player(new Sprite("res/ttt/image/sprite/circle_cracked_red.png"));
+                : new Player(new Sprite("res/ttt/image/sprite/circle_cracked_red.png"));                
+            //*/
 
             try {
-                return new TicTacToe(players, new Field2D(fieldWidth.get(), fieldHeight.get()), gamePoints.get());
+                return new TicTacToe(players, new Field2D(fieldWidth.get(), fieldHeight.get()), gamePoints.get(), cbx_gravity.isSelected());
             } catch(Exception e) {
                 e.printStackTrace();
             }

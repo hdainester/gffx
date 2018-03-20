@@ -22,6 +22,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -55,6 +58,9 @@ public class Game2DView extends Stage {
         
         setMinWidth(Screen.getPrimary().getVisualBounds().getWidth()/2);
         setMinHeight(Screen.getPrimary().getVisualBounds().getHeight()/2);
+        setWidth(getMinWidth());
+        setHeight(getMinHeight());
+
         centerOnScreen();
         initScene();
     }
@@ -63,20 +69,20 @@ public class Game2DView extends Stage {
         gamePane = new Field2DPane(game.getField());
         mainPane = new BorderPane(gamePane);
 
-        // EXPERIMENTAL
+        // EXPERIMENTAL scroll test
         gamePane.setOnScroll(e -> {
             if(e.getTouchCount() == 0) { // Mousewheel- / Trackpad-Zoom
                 double y_delta = e.getDeltaY();
 
                 if(y_delta < 0) {
-                    System.out.println("scroll down " + y_delta);
+                    //System.out.println("scroll down " + y_delta);
 
                     if(gamePane.getScaleX() < 1) {
                         gamePane.setScaleX(gamePane.getScaleX()+0.025f);
                         gamePane.setScaleY(gamePane.getScaleY()+0.025f);
                     }
                 } else {
-                    System.out.println("scroll up " + y_delta);
+                    //System.out.println("scroll up " + y_delta);
 
                     if(gamePane.getScaleX() > 0.5) {
                         gamePane.setScaleX(gamePane.getScaleX()-0.025f);
@@ -100,17 +106,27 @@ public class Game2DView extends Stage {
                 }
 
                 if(game.isRunning() && !aiThread.isAlive()) {
-                    (aiThread = new Thread(() ->
-                        game.aiMove(() ->
-                            Platform.runLater(() ->
-                                playTurn()
-                    ))) {{ setDaemon(true); }}).start();
+                    (aiThread = new Thread(() -> {
+                        game.aiMove(() -> Platform.runLater(() -> playTurn()));
+                    }) {{ setDaemon(true); }}).start();
                 }
             });
         });
 
-        game.aiMove(() -> playTurn()); // in case AI goes first (caution: this is not on its own thread so it will block JavaFX Thread until done!)
-        setScene(new Scene(mainPane));
+        // EXPERIMENTAL dark background test
+        StackPane mainStack = new StackPane();
+        mainStack.getChildren().addAll(new Rectangle() {{
+            widthProperty().bind(mainStack.widthProperty());
+            heightProperty().bind(mainStack.heightProperty());
+            setFill(Color.BLACK);
+        }}, mainPane);
+        //////////////
+
+        // in case AI goes first (TODO proper game logic thread)
+        game.aiMove(() -> playTurn());
+
+        //setScene(new Scene(mainPane));
+        setScene(new Scene(mainStack));
     }
 
     private void initDialog() {

@@ -12,7 +12,7 @@ new_game:   en, New Game;       de, Neues Spiel;
 quit:       en, Quit;           de, Beenden;
 pva:        en, Enable AI;      de, Aktiviere KI;
 wins:       en, wins;           de, gewinnt;
-player:     en, player;         de, Spieler;
+player:     en, Player;         de, Spieler;
 game_over:  en, Game Over;      de, Spiel beendet;
 hide:       en, Hide;           de, Verstecken;
 show:       en, Show;           de, Anzeigen;

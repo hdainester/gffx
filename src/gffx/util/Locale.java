@@ -3,6 +3,7 @@ package gffx.util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,7 +19,8 @@ public class Locale {
         languages = new HashSet<>();
 
         // parse locale file
-        try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream("res/ttt/locale"))) { // TODO static parse method(String url)
+        InputStream locale = ClassLoader.getSystemResourceAsStream("res/ttt/locale");
+        try(BufferedInputStream bis = new BufferedInputStream(locale)) { // TODO static parse method(String url)
             int nextByte;
             char nextChar;
             String id = "", lang = "", val = "", buf = "";

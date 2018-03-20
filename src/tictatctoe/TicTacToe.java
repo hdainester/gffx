@@ -9,19 +9,27 @@ import gffx.game.world.Field2D;
 
 public class TicTacToe extends Game2D {
     private int next = 0, winPoints;
+    private boolean gravity;
 
     public TicTacToe(Player[] players, Field2D field) throws Exception {
         this(players, field, field.height());
     }
 
     public TicTacToe(Player[] players, Field2D field, int winPoints) throws Exception {
+        this(players, field, winPoints, false);
+    }
+
+    public TicTacToe(Player[] players, Field2D field, int winPoints, boolean gravity) throws Exception {
         super(players, field);
         this.winPoints = winPoints;
+        this.gravity = gravity;
         init();
     }
 
     public TicTacToe(TicTacToe other) {
         super(other.getPlayers().toArray(new Player[0]), new Field2D(other.getField()));
+        winPoints = other.winPoints;
+        gravity = other.gravity;
 
         try {
             init();
@@ -31,8 +39,22 @@ public class TicTacToe extends Game2D {
         }
     }
 
+    public void setWinPoints(int points) {
+        winPoints = points;
+    }
+
+    public int getWinPoints() {
+        return winPoints;
+    }
+
     private void init() throws Exception {
         setTurnCondition(() -> {
+            if(gravity) {
+                setCursor(getCursorX(), 0);
+                while(getCursorY() < getField().height()-1 && getField().get(getCursorX(), getCursorY()+1) == null)
+                    setCursor(getCursorX(), getCursorY()+1);
+            }
+
             if(getField().get(getCursorX(), getCursorY()) == null) {
                 int last = next;
                 getField().set(getCursorX(), getCursorY(), getPlayers().get(next));
@@ -45,7 +67,7 @@ public class TicTacToe extends Game2D {
 
         setWinCondition((p) -> {
             if(p != null) {
-                int wdt = getField().width(), hgt = getField().height(), dgt = wdt+hgt;
+                int wdt = getField().width(), hgt = getField().height(), dgt = wdt+hgt-1;
                 int[] hpoints = new int[hgt];
                 int[] vpoints = new int[wdt];
                 int[] d1points = new int[dgt];
@@ -53,7 +75,7 @@ public class TicTacToe extends Game2D {
                 
                 for(int d1, d2, y = 0; y < hgt; ++y) {
                     for(int x = 0; x < wdt; ++x) {
-                        d1 = (dgt/2) + (x-y);
+                        d1 = (hgt-1) + (x-y);
                         d2 = x+y;
 
                         if(getField().get(x, y) == p) {
@@ -61,7 +83,6 @@ public class TicTacToe extends Game2D {
                             vpoints[x]++;
                             d1points[d1]++;
                             d2points[d2]++;
-
 
                             if(hpoints[y] >= winPoints || vpoints[x] >= winPoints
                             || d1points[d1] >= winPoints || d2points[d2] >= winPoints)

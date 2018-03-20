@@ -4,6 +4,9 @@ build
 ## log files
 .log
 
+## VSCode specific files
+.vscode
+
 ## makefile
 makefile
 Makefile

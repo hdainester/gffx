@@ -6,6 +6,8 @@ import gffx.game.ressource.Sprite;
 import gffx.game.rule.AIOperation;
 
 public abstract class PlayerAI extends Player {
+    private int debug_max_depth; // DEBUG
+
     public PlayerAI() {
         super();
     }
@@ -15,6 +17,7 @@ public abstract class PlayerAI extends Player {
     }
 
     protected Game2D minimax(Game2D game, int depth) {
+        debug_max_depth = depth; //DEBUG
         return minimax(game, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
     }
 
@@ -31,7 +34,9 @@ public abstract class PlayerAI extends Player {
                 gamecopy.setCursor(x, y);
 
                 if(gamecopy.turnCondition().check() != null) {
-                    System.out.println("PlayerAI::minimax: [" + depth + "]: try turn at " + x + ", " + y + ", max: " + ismax + ", alpha: " + alpha + ", beta: " + beta);
+                    // DEBUG
+                    for(int i = depth; i < debug_max_depth; ++i) System.out.print("--- ");
+                    System.out.println("PlayerAI::minimax: [" + (debug_max_depth-depth+1) + "]: try turn at " + x + ", " + y + ", max: " + ismax + ", alpha: " + alpha + ", beta: " + beta);
 
                     if(alpha < beta) {
                         rating = rate(minimax(gamecopy, depth-1, alpha, beta, !ismax));
@@ -42,8 +47,10 @@ public abstract class PlayerAI extends Player {
                             if(ismax) alpha = rating;
                             else beta = rating;
                         }
-                    } else
-                        System.out.println("PlayerAI::minimax: [" + depth + "]: pruning at " + x + ", " + y);
+                    } else { // DEBUG
+                        for(int i = depth; i < debug_max_depth; ++i) System.out.print("--- ");
+                        System.out.println("PlayerAI::minimax: [" + (debug_max_depth-depth+1) + "]: pruning at " + x + ", " + y);
+                    }
                 }
             }
         }

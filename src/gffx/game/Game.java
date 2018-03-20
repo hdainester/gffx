@@ -43,10 +43,6 @@ public abstract class Game {
         turnCondition = tc;
     }
 
-    public Game copy() {
-        return this;
-    }
-
     public String getTitle() {
         return "Game";
     }
@@ -54,4 +50,5 @@ public abstract class Game {
     public abstract void reset();
     public abstract void aiMove(AIOperation op);
     public abstract boolean isRunning();
+    public abstract Game copy();
 }
